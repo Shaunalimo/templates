@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Users API Documentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* Mobile-first: base styles target small screens; min-width queries enhance upward. */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--border:rgba(255,255,255,.08);--text:#e4e4e7;--text2:#a1a1aa;--accent:#a78bfa;--accent2:#8b5cf6;--green:#4ade80;--red:#f87171;--orange:#fb923c;--blue:#60a5fa;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--heading:'Inter',sans-serif;--radius:8px}
+body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.6;min-height:100vh}
+h1,h2,h3,h4{font-family:var(--heading);font-weight:700}
+a{color:var(--accent);text-decoration:none}
+img,svg,video{max-width:100%}
+code{overflow-wrap:anywhere}
+.container{max-width:960px;margin:0 auto;padding:1.25rem 1rem}
+header{border-bottom:1px solid var(--border);padding:1.5rem 0}
+header h1{font-size:clamp(1.5rem,4vw + .75rem,2rem);margin-bottom:.5rem}
+header p{color:var(--text2);font-size:.95rem}
+.base-url{display:inline-block;max-width:100%;overflow-wrap:anywhere;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:.4rem .8rem;font-family:monospace;font-size:.85rem;margin-top:.75rem;color:var(--accent)}
+.section{margin-top:2.5rem}
+.section>h2{font-size:clamp(1.15rem,2.5vw + .75rem,1.3rem);margin-bottom:1rem;color:var(--text)}
+.endpoint{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:1rem;overflow:hidden;transition:border-color .2s}
+.endpoint:hover{border-color:rgba(167,139,250,.2)}
+.endpoint-header{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem .75rem;min-height:44px;padding:.85rem 1rem;cursor:pointer;user-select:none}
+.endpoint-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.method{font-family:monospace;font-size:.75rem;font-weight:700;padding:.25rem .6rem;border-radius:4px;min-width:56px;text-align:center;text-transform:uppercase;flex:0 0 auto}
+.method-get{background:rgba(96,165,250,.15);color:var(--blue)}
+.method-post{background:rgba(74,222,128,.15);color:var(--green)}
+.method-put{background:rgba(251,146,60,.15);color:var(--orange)}
+.method-delete{background:rgba(248,113,113,.15);color:var(--red)}
+.endpoint-path{font-family:monospace;font-size:.82rem;overflow-wrap:anywhere;color:var(--text)}
+.endpoint-desc{display:none;color:var(--text2);font-size:.85rem;margin-left:auto}
+.chevron{color:var(--text2);transition:transform .2s;font-size:.8rem;flex-shrink:0;margin-left:auto}
+.endpoint.open .chevron{transform:rotate(180deg)}
+.endpoint-body{display:none;border-top:1px solid var(--border);padding:1rem}
+.endpoint.open .endpoint-body{display:block}
+.params-table{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:.75rem;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.params-table th{text-align:left;color:var(--text2);font-weight:600;padding:.5rem .75rem;border-bottom:1px solid var(--border);white-space:nowrap}
+.params-table td{padding:.5rem .75rem;border-bottom:1px solid var(--border);vertical-align:top}
+.params-table .param-name{font-family:monospace;color:var(--accent)}
+.params-table .param-type{color:var(--text2);font-size:.8rem}
+.params-table .required{color:var(--red);font-size:.7rem;margin-left:.25rem}
+.tab-bar{display:flex;flex-wrap:wrap;gap:0;margin-top:1rem;border-bottom:1px solid var(--border)}
+.tab-btn{background:none;border:none;color:var(--text2);font-family:var(--font);font-size:.85rem;min-height:44px;padding:.5rem .9rem;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-content{display:none;margin-top:1rem}
+.tab-content.active{display:block}
+.code-block{position:relative;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;font-family:monospace;font-size:clamp(.75rem,.65rem + .5vw,.82rem);line-height:1.7;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:pre;color:var(--text2)}
+.code-block.has-copy{padding-top:3.1rem}
+.code-block .str{color:var(--green)}
+.code-block .num{color:var(--orange)}
+.code-block .key{color:var(--accent)}
+.code-block .bool{color:var(--blue)}
+.code-block .null{color:var(--red)}
+.copy-btn{position:absolute;top:.5rem;right:.5rem;min-height:44px;min-width:44px;background:var(--surface);border:1px solid var(--border);color:var(--text2);font-size:.75rem;padding:.3rem .6rem;border-radius:4px;cursor:pointer;transition:all .2s;font-family:var(--font)}
+.copy-btn:hover{color:var(--text);border-color:var(--accent)}
+.copy-btn.copied{color:var(--green);border-color:var(--green)}
+.try-it{margin-top:1rem}
+.try-it label{display:block;font-size:.8rem;color:var(--text2);margin-bottom:.3rem;margin-top:.75rem}
+.try-it input,.try-it textarea{width:100%;min-height:44px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:.5rem .75rem;color:var(--text);font-family:monospace;font-size:16px;transition:border-color .2s}
+.try-it input:focus,.try-it textarea:focus{outline:none;border-color:var(--accent)}
+.try-it textarea{min-height:80px;resize:vertical}
+.try-btn{margin-top:1rem;min-height:44px;background:var(--accent);color:#fff;border:none;padding:.6rem 1.5rem;border-radius:var(--radius);font-family:var(--font);font-size:.85rem;font-weight:600;cursor:pointer;transition:background .2s}
+.try-btn:hover{background:var(--accent2)}
+.response-area{margin-top:1rem}
+.status-badge{display:inline-block;font-size:.75rem;font-weight:700;padding:.2rem .5rem;border-radius:4px;margin-bottom:.5rem}
+.status-2xx{background:rgba(74,222,128,.15);color:var(--green)}
+.status-4xx{background:rgba(248,113,113,.15);color:var(--red)}
+.info-box{background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.15);border-radius:var(--radius);padding:.75rem 1rem;font-size:.85rem;color:var(--text2);margin-top:1rem}
+footer{text-align:center;padding:3rem 1rem 2rem;color:var(--text2);font-size:.8rem;border-top:1px solid var(--border);margin-top:3rem}
+@media(min-width:640px){
+  .container{padding:2rem 1.5rem}
+  header{padding:2rem 0}
+  .endpoint-header{flex-wrap:nowrap;padding:1rem 1.25rem}
+  .endpoint-path{font-size:.9rem}
+  .endpoint-desc{display:inline}
+  .chevron{margin-left:0}
+  .endpoint-body{padding:1.25rem}
+  .params-table{display:table}
+  .tab-btn{padding:.5rem 1rem}
+  .code-block.has-copy{padding-top:1rem}
+  .copy-btn{min-height:0;min-width:0}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Users API</h1>
+    <p>RESTful API for managing user resources. Supports JSON request and response bodies.</p>
+    <div class="base-url">https://api.example.com/v1</div>
+  </header>
+
+  <div class="section">
+    <h2>Authentication</h2>
+    <div class="info-box">
+      All endpoints require a Bearer token in the Authorization header.<br>
+      <code style="color:var(--accent)">Authorization: Bearer your_api_key_here</code>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Endpoints</h2>
+    <div id="endpoints"></div>
+  </div>
+</div>
+<footer>Users API v1.0 -- Interactive Documentation</footer>
+
+<script>
+const endpoints = [
+  {
+    method: 'GET', path: '/users', desc: 'List all users',
+    params: [
+      { name: 'page', type: 'integer', required: false, desc: 'Page number (default: 1)' },
+      { name: 'limit', type: 'integer', required: false, desc: 'Results per page (default: 20, max: 100)' },
+      { name: 'sort', type: 'string', required: false, desc: 'Sort field: created_at, name, email' },
+      { name: 'order', type: 'string', required: false, desc: 'Sort order: asc or desc' }
+    ],
+    curl: `curl -X GET "https://api.example.com/v1/users?page=1&limit=10" \\
+  -H "Authorization: Bearer your_api_key_here"`,
+    response: { status: 200, body: {
+      data: [
+        { id: "usr_1a2b3c4d", name: "Sarah Chen", email: "sarah@techcorp.io", role: "admin", created_at: "2025-11-14T09:23:00Z" },
+        { id: "usr_5e6f7g8h", name: "Marcus Rivera", email: "marcus@designlab.co", role: "member", created_at: "2025-12-02T14:45:00Z" }
+      ],
+      meta: { page: 1, limit: 10, total: 47, pages: 5 }
+    }},
+    tryFields: [
+      { name: 'page', label: 'Page', placeholder: '1' },
+      { name: 'limit', label: 'Limit', placeholder: '10' }
+    ]
+  },
+  {
+    method: 'GET', path: '/users/:id', desc: 'Get a single user',
+    params: [
+      { name: 'id', type: 'string', required: true, desc: 'User ID (e.g. usr_1a2b3c4d)' }
+    ],
+    curl: `curl -X GET "https://api.example.com/v1/users/usr_1a2b3c4d" \\
+  -H "Authorization: Bearer your_api_key_here"`,
+    response: { status: 200, body: {
+      data: { id: "usr_1a2b3c4d", name: "Sarah Chen", email: "sarah@techcorp.io", role: "admin", avatar_url: "https://cdn.example.com/avatars/sarah.jpg", created_at: "2025-11-14T09:23:00Z", updated_at: "2026-01-08T11:30:00Z" }
+    }},
+    tryFields: [
+      { name: 'id', label: 'User ID', placeholder: 'usr_1a2b3c4d' }
+    ]
+  },
+  {
+    method: 'POST', path: '/users', desc: 'Create a new user',
+    params: [
+      { name: 'name', type: 'string', required: true, desc: 'Full name (2-100 characters)' },
+      { name: 'email', type: 'string', required: true, desc: 'Valid email address (must be unique)' },
+      { name: 'role', type: 'string', required: false, desc: 'User role: admin, member, viewer (default: member)' },
+      { name: 'password', type: 'string', required: true, desc: 'Minimum 8 characters' }
+    ],
+    curl: `curl -X POST "https://api.example.com/v1/users" \\
+  -H "Authorization: Bearer your_api_key_here" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "name": "Jordan Park",
+    "email": "jordan@startup.dev",
+    "role": "member",
+    "password": "securepass123"
+  }'`,
+    response: { status: 201, body: {
+      data: { id: "usr_9i0j1k2l", name: "Jordan Park", email: "jordan@startup.dev", role: "member", created_at: "2026-02-17T22:00:00Z" }
+    }},
+    tryFields: [
+      { name: 'name', label: 'Name', placeholder: 'Jordan Park' },
+      { name: 'email', label: 'Email', placeholder: 'jordan@startup.dev' },
+      { name: 'role', label: 'Role', placeholder: 'member' }
+    ],
+    bodyField: true
+  },
+  {
+    method: 'PUT', path: '/users/:id', desc: 'Update a user',
+    params: [
+      { name: 'id', type: 'string', required: true, desc: 'User ID' },
+      { name: 'name', type: 'string', required: false, desc: 'Updated name' },
+      { name: 'email', type: 'string', required: false, desc: 'Updated email' },
+      { name: 'role', type: 'string', required: false, desc: 'Updated role' }
+    ],
+    curl: `curl -X PUT "https://api.example.com/v1/users/usr_1a2b3c4d" \\
+  -H "Authorization: Bearer your_api_key_here" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "name": "Sarah Chen-Williams",
+    "role": "admin"
+  }'`,
+    response: { status: 200, body: {
+      data: { id: "usr_1a2b3c4d", name: "Sarah Chen-Williams", email: "sarah@techcorp.io", role: "admin", updated_at: "2026-02-17T22:05:00Z" }
+    }},
+    tryFields: [
+      { name: 'id', label: 'User ID', placeholder: 'usr_1a2b3c4d' },
+      { name: 'name', label: 'Name', placeholder: 'Sarah Chen-Williams' }
+    ],
+    bodyField: true
+  },
+  {
+    method: 'DELETE', path: '/users/:id', desc: 'Delete a user',
+    params: [
+      { name: 'id', type: 'string', required: true, desc: 'User ID to delete' }
+    ],
+    curl: `curl -X DELETE "https://api.example.com/v1/users/usr_1a2b3c4d" \\
+  -H "Authorization: Bearer your_api_key_here"`,
+    response: { status: 200, body: { message: "User usr_1a2b3c4d has been permanently deleted." }},
+    tryFields: [
+      { name: 'id', label: 'User ID', placeholder: 'usr_1a2b3c4d' }
+    ]
+  }
+];
+
+function syntaxHL(obj) {
+  return JSON.stringify(obj, null, 2)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"([^"]+)":/g, '<span class="key">"$1"</span>:')
+    .replace(/: "(.*?)"/g, ': <span class="str">"$1"</span>')
+    .replace(/: (\d+)/g, ': <span class="num">$1</span>')
+    .replace(/: (true|false)/g, ': <span class="bool">$1</span>')
+    .replace(/: (null)/g, ': <span class="null">null</span>');
+}
+
+function escapeHTML(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+const container = document.getElementById('endpoints');
+endpoints.forEach((ep, i) => {
+  const mc = 'method-' + ep.method.toLowerCase();
+  const statusClass = ep.response.status < 300 ? 'status-2xx' : 'status-4xx';
+  const id = 'ep-' + i;
+
+  let paramsHTML = '';
+  if (ep.params.length) {
+    paramsHTML = `<h4 style="font-size:.85rem;color:var(--text2);margin-bottom:.25rem">Parameters</h4>
+    <table class="params-table"><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+    ${ep.params.map(p => `<tr><td><span class="param-name">${p.name}</span>${p.required ? '<span class="required">required</span>' : ''}</td><td class="param-type">${p.type}</td><td>${p.desc}</td></tr>`).join('')}
+    </tbody></table>`;
+  }
+
+  let tryHTML = ep.tryFields.map(f => `<label for="${id}-${f.name}">${f.label}</label><input id="${id}-${f.name}" placeholder="${f.placeholder}" />`).join('');
+
+  const div = document.createElement('div');
+  div.className = 'endpoint';
+  div.innerHTML = `
+    <div class="endpoint-header" tabindex="0" role="button" aria-expanded="false" aria-controls="${id}-body">
+      <span class="method ${mc}">${ep.method}</span>
+      <span class="endpoint-path">${ep.path}</span>
+      <span class="endpoint-desc">${ep.desc}</span>
+      <span class="chevron">&#9660;</span>
+    </div>
+    <div class="endpoint-body" id="${id}-body">
+      ${paramsHTML}
+      <div class="tab-bar">
+        <button class="tab-btn active" data-tab="${id}-curl">cURL</button>
+        <button class="tab-btn" data-tab="${id}-response">Response</button>
+        <button class="tab-btn" data-tab="${id}-try">Try It</button>
+      </div>
+      <div class="tab-content active" id="${id}-curl">
+        <div class="code-block has-copy"><button class="copy-btn" data-copy="${id}-curl-raw">Copy</button>${escapeHTML(ep.curl)}</div>
+        <textarea id="${id}-curl-raw" style="display:none">${ep.curl}</textarea>
+      </div>
+      <div class="tab-content" id="${id}-response">
+        <span class="status-badge ${statusClass}">${ep.response.status} ${ep.response.status===200?'OK':ep.response.status===201?'Created':'Error'}</span>
+        <div class="code-block">${syntaxHL(ep.response.body)}</div>
+      </div>
+      <div class="tab-content" id="${id}-try">
+        <div class="try-it">
+          ${tryHTML}
+          <button class="try-btn" data-ep="${i}">Send Request</button>
+          <div class="response-area" id="${id}-result"></div>
+        </div>
+      </div>
+    </div>`;
+  container.appendChild(div);
+
+  const header = div.querySelector('.endpoint-header');
+  header.addEventListener('click', () => {
+    div.classList.toggle('open');
+    header.setAttribute('aria-expanded', div.classList.contains('open'));
+  });
+  header.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' '){e.preventDefault();header.click()}});
+
+  div.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      div.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      div.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+});
+
+document.addEventListener('click', e => {
+  if (e.target.classList.contains('copy-btn')) {
+    const src = e.target.dataset.copy;
+    const el = document.getElementById(src);
+    const text = el ? el.value : e.target.parentElement.textContent.replace('Copy','').trim();
+    navigator.clipboard.writeText(text).then(() => {
+      e.target.textContent = 'Copied';
+      e.target.classList.add('copied');
+      setTimeout(() => { e.target.textContent = 'Copy'; e.target.classList.remove('copied'); }, 1500);
+    });
+  }
+  if (e.target.classList.contains('try-btn')) {
+    const idx = parseInt(e.target.dataset.ep);
+    const ep = endpoints[idx];
+    const resultDiv = document.getElementById('ep-'+idx+'-result');
+    resultDiv.innerHTML = `<span class="status-badge status-2xx">${ep.response.status} ${ep.response.status===200?'OK':'Created'}</span><div class="code-block">${syntaxHL(ep.response.body)}</div>`;
+  }
+});
+</script>
+</body>
+</html>

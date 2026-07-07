@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Tracker</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header>
+    <h1 id="app-title">Tracker</h1>
+    <p id="app-subtitle">Add items, check them off, keep a running total.</p>
+  </header>
+
+  <main>
+    <form id="add-form" autocomplete="off">
+      <input id="title" type="text" placeholder="What are you tracking?" required>
+      <input id="amount" type="number" step="any" placeholder="Amount (optional)" inputmode="decimal">
+      <button type="submit">Add</button>
+    </form>
+
+    <section class="stats" id="stats">
+      <div class="stat"><span class="num" id="stat-active">0</span><span class="label">Active</span></div>
+      <div class="stat"><span class="num" id="stat-done">0</span><span class="label">Done</span></div>
+      <div class="stat"><span class="num" id="stat-total">0</span><span class="label">Total</span></div>
+      <div class="stat"><span class="num" id="stat-amount">0</span><span class="label">Amount</span></div>
+    </section>
+
+    <nav class="filters" id="filters">
+      <button data-filter="all" class="active">All</button>
+      <button data-filter="active">Active</button>
+      <button data-filter="done">Done</button>
+    </nav>
+
+    <ul id="list"></ul>
+    <p id="empty" class="empty" hidden>Nothing here yet — add your first item above.</p>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

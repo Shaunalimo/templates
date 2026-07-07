@@ -1,0 +1,12 @@
+{
+  "name": "tracker",
+  "version": "1.0.0",
+  "description": "A tracker / list app — add, edit, complete, and filter items with live stats and persistent storage.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
