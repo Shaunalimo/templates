@@ -24,7 +24,7 @@ Ordered by how often people actually build them.
 
 ## How it works
 
-1. Describe your app (or choose a starter) in the [iOS app](https://apps.apple.com/us/app/vibekit-agent-devops/id6760206636) or on [vibekit.bot](https://vibekit.bot).
+1. Describe your app (or choose a starter) in the [iOS app](https://apps.apple.com/us/app/vibekit-agent-devops/id6760206636) or on [vibekit.bot](https://vibekit.bot/?ref=github_templates).
 2. The agent starts from the closest template and ships a first version to a live URL.
 3. Keep chatting — the same agent maintains and evolves the app over time.
 
@@ -34,4 +34,4 @@ These mirror the platform's built-in starters. Issues and suggestions welcome; t
 
 ---
 
-<sub>Part of [VibeKit](https://github.com/vibekit-bot) · [vibekit.bot](https://vibekit.bot)</sub>
+<sub>Part of [VibeKit](https://github.com/vibekit-bot) · [vibekit.bot](https://vibekit.bot/?ref=github_templates)</sub>
