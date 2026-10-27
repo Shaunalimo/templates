@@ -16,7 +16,7 @@ const FILE = path.join(DATA_DIR, 'items.json');
 function seed() {
   const now = Date.now();
   return [
-    { id: crypto.randomUUID(), title: 'Welcome — tap the circle to complete an item', note: '', amount: 0, done: false, createdAt: new Date(now - 2000).toISOString() },
+    { id: crypto.randomUUID(), title: 'Welcome. Tap the circle to complete an item', note: '', amount: 0, done: false, createdAt: new Date(now - 2000).toISOString() },
     { id: crypto.randomUUID(), title: 'Add your own with the field above', note: 'Items with an amount roll up into the total.', amount: 0, done: false, createdAt: new Date(now - 1000).toISOString() },
     { id: crypto.randomUUID(), title: 'Sample done item', note: '', amount: 0, done: true, createdAt: new Date(now).toISOString() },
   ];
@@ -29,12 +29,25 @@ function ensure() {
 
 function readAll() {
   ensure();
-  try { return JSON.parse(fs.readFileSync(FILE, 'utf8')); } catch (_) { return []; }
+  try {
+    return JSON.parse(fs.readFileSync(FILE, 'utf8'));
+  } catch (err) {
+    // Corrupt/unparseable file — preserve it for inspection instead of
+    // silently clobbering on the next write, then start fresh.
+    const backup = FILE + '.corrupt.' + Date.now();
+    try { fs.renameSync(FILE, backup); } catch (_) {}
+    console.error(`items.json unreadable (${err.message}); moved to ${backup}`);
+    return [];
+  }
 }
 
 function writeAll(rows) {
   ensure();
-  fs.writeFileSync(FILE, JSON.stringify(rows, null, 2), 'utf8');
+  // Atomic write: fully write a temp file then rename over the target, so a
+  // crash mid-write can never leave a truncated items.json.
+  const tmp = FILE + '.tmp';
+  fs.writeFileSync(tmp, JSON.stringify(rows, null, 2), 'utf8');
+  fs.renameSync(tmp, FILE);
 }
 
 function list() {

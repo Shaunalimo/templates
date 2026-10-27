@@ -18,9 +18,12 @@ if (siteNav && navToggle) {
 
 const form = document.getElementById('contact-form');
 const status = document.getElementById('contact-status');
+const submitBtn = form.querySelector('button[type="submit"]');
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
+  // Disable to prevent double-submit storing duplicate messages.
+  if (submitBtn) submitBtn.disabled = true;
   status.hidden = false;
   status.className = 'status';
   status.textContent = 'Sending…';
@@ -29,21 +32,28 @@ form.addEventListener('submit', async (e) => {
     email: form.elements.email.value.trim(),
     message: form.elements.message.value.trim(),
   };
-  const res = await fetch('/api/contact', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  });
-  if (res.ok) {
-    form.reset();
-    status.className = 'status success';
-    status.textContent = 'Thanks — I\'ll get back to you.';
-    return;
+  try {
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (res.ok) {
+      form.reset();
+      status.className = 'status success';
+      status.textContent = 'Thanks. I\'ll get back to you soon.';
+      return;
+    }
+    let body = null;
+    try { body = await res.json(); } catch (_) {}
+    status.className = 'status error';
+    status.textContent = body && body.fields
+      ? Object.values(body.fields).join(' • ')
+      : 'Something went wrong. Please try again.';
+  } catch (_) {
+    status.className = 'status error';
+    status.textContent = 'Couldn\'t send. Please try again.';
+  } finally {
+    if (submitBtn) submitBtn.disabled = false;
   }
-  let body = null;
-  try { body = await res.json(); } catch (_) {}
-  status.className = 'status error';
-  status.textContent = body && body.fields
-    ? Object.values(body.fields).join(' • ')
-    : 'Something went wrong. Please try again.';
 });

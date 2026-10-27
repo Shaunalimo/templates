@@ -3,102 +3,172 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Users API Documentation</title>
+<title>Tasks API</title>
+    <meta name="description" content="A REST API for tasks, JSON-file persisted, with a live endpoint explorer.">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="icon" href="data:image/svg+xml,<svg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22><rect%20x=%2212%22%20y=%2212%22%20width=%2276%22%20height=%2276%22%20rx=%2218%22%20fill=%22%23a78bfa%22/></svg>">
+    <!-- Social share preview (Open Graph + Twitter). When you brand this app, update the
+         title/description here and swap og:image & twitter:image for your own 1200x630 image. -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Tasks API">
+    <meta property="og:description" content="A REST API for tasks, JSON-file persisted, with a live endpoint explorer.">
+    <meta property="og:image" content="https://vibekit.bot/public/og-vibekit.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Tasks API">
+    <meta name="twitter:description" content="A REST API for tasks, JSON-file persisted, with a live endpoint explorer.">
+    <meta name="twitter:image" content="https://vibekit.bot/public/og-vibekit.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700&display=swap" rel="stylesheet">
 <style>
 /* Mobile-first: base styles target small screens; min-width queries enhance upward. */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--border:rgba(255,255,255,.08);--text:#e4e4e7;--text2:#a1a1aa;--accent:#a78bfa;--accent2:#8b5cf6;--green:#4ade80;--red:#f87171;--orange:#fb923c;--blue:#60a5fa;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--heading:'Inter',sans-serif;--radius:8px}
-body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.6;min-height:100vh}
-h1,h2,h3,h4{font-family:var(--heading);font-weight:700}
+:root{
+  --bg:#08090c;--surface:#101218;--surface2:#161922;--surface3:#0c0e13;
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.14);
+  --text:#e7e8ee;--text2:#9aa0b0;--text3:#6b7180;
+  --accent:#a78bfa;--accent2:#8b5cf6;--accent-soft:rgba(167,139,250,.12);
+  --green:#4ade80;--red:#f87171;--orange:#fb923c;--blue:#60a5fa;
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --mono:ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,monospace;
+  --heading:'Inter',sans-serif;--radius:10px;--ring:0 0 0 3px rgba(167,139,250,.35)
+}
+body{background:radial-gradient(1100px 500px at 50% -8%,rgba(139,92,246,.10),transparent 60%),var(--bg);color:var(--text);font-family:var(--font);line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--heading);font-weight:700;letter-spacing:-.02em}
 a{color:var(--accent);text-decoration:none}
 img,svg,video{max-width:100%}
-code{overflow-wrap:anywhere}
-.container{max-width:960px;margin:0 auto;padding:1.25rem 1rem}
-header{border-bottom:1px solid var(--border);padding:1.5rem 0}
-header h1{font-size:clamp(1.5rem,4vw + .75rem,2rem);margin-bottom:.5rem}
-header p{color:var(--text2);font-size:.95rem}
-.base-url{display:inline-block;max-width:100%;overflow-wrap:anywhere;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:.4rem .8rem;font-family:monospace;font-size:.85rem;margin-top:.75rem;color:var(--accent)}
-.section{margin-top:2.5rem}
-.section>h2{font-size:clamp(1.15rem,2.5vw + .75rem,1.3rem);margin-bottom:1rem;color:var(--text)}
-.endpoint{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:1rem;overflow:hidden;transition:border-color .2s}
-.endpoint:hover{border-color:rgba(167,139,250,.2)}
-.endpoint-header{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem .75rem;min-height:44px;padding:.85rem 1rem;cursor:pointer;user-select:none}
-.endpoint-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
-.method{font-family:monospace;font-size:.75rem;font-weight:700;padding:.25rem .6rem;border-radius:4px;min-width:56px;text-align:center;text-transform:uppercase;flex:0 0 auto}
-.method-get{background:rgba(96,165,250,.15);color:var(--blue)}
-.method-post{background:rgba(74,222,128,.15);color:var(--green)}
-.method-put{background:rgba(251,146,60,.15);color:var(--orange)}
-.method-delete{background:rgba(248,113,113,.15);color:var(--red)}
-.endpoint-path{font-family:monospace;font-size:.82rem;overflow-wrap:anywhere;color:var(--text)}
+code{overflow-wrap:anywhere;font-family:var(--mono)}
+.container{max-width:920px;margin:0 auto;padding:1.25rem 1rem}
+
+header{padding:1.75rem 0 1.5rem}
+.eyebrow{display:inline-flex;align-items:center;gap:.45rem;font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border:1px solid rgba(167,139,250,.2);padding:.3rem .6rem;border-radius:999px;margin-bottom:.9rem}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(74,222,128,.18)}
+header h1{font-size:clamp(1.7rem,4vw + .75rem,2.25rem);margin-bottom:.55rem;line-height:1.15}
+header p{color:var(--text2);font-size:.98rem;max-width:60ch}
+.base-url{display:inline-flex;align-items:center;gap:.5rem;max-width:100%;overflow-wrap:anywhere;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:.5rem .85rem;font-family:var(--mono);font-size:.85rem;margin-top:1.1rem;color:var(--text)}
+.base-url b{color:var(--accent);font-weight:600}
+.base-url .tag{color:var(--text3);font-size:.78rem}
+
+.section{margin-top:2.75rem}
+.section>h2{font-size:clamp(1.2rem,2.5vw + .75rem,1.4rem);margin-bottom:1rem;color:var(--text)}
+
+.info-box{background:linear-gradient(var(--surface),var(--surface));background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:var(--radius);padding:.9rem 1.1rem;font-size:.9rem;color:var(--text2);margin-top:1rem}
+.info-box strong{color:var(--text)}
+.info-box code{background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:.1rem .4rem;font-size:.82rem;color:var(--accent)}
+
+.pill{display:inline-block;font-family:var(--mono);font-size:.78rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.15rem .5rem;color:var(--text);margin:.15rem .1rem}
+
+.endpoint{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:.85rem;overflow:hidden;transition:border-color .2s,box-shadow .2s}
+.endpoint:hover{border-color:var(--border2)}
+.endpoint.open{border-color:rgba(167,139,250,.3);box-shadow:0 8px 30px rgba(0,0,0,.35)}
+.endpoint-header{display:flex;align-items:center;flex-wrap:wrap;gap:.6rem .75rem;min-height:52px;padding:.85rem 1rem;cursor:pointer;user-select:none}
+.endpoint-header:focus-visible{outline:none;box-shadow:var(--ring);border-radius:12px}
+.method{font-family:var(--mono);font-size:.72rem;font-weight:700;letter-spacing:.03em;padding:.32rem .55rem;border-radius:6px;min-width:62px;text-align:center;text-transform:uppercase;flex:0 0 auto;border:1px solid transparent}
+.method-get{background:rgba(96,165,250,.14);color:var(--blue);border-color:rgba(96,165,250,.3)}
+.method-post{background:rgba(74,222,128,.14);color:var(--green);border-color:rgba(74,222,128,.3)}
+.method-put{background:rgba(251,146,60,.14);color:var(--orange);border-color:rgba(251,146,60,.3)}
+.method-delete{background:rgba(248,113,113,.14);color:var(--red);border-color:rgba(248,113,113,.3)}
+.endpoint-path{font-family:var(--mono);font-size:.85rem;overflow-wrap:anywhere;color:var(--text);font-weight:500}
 .endpoint-desc{display:none;color:var(--text2);font-size:.85rem;margin-left:auto}
-.chevron{color:var(--text2);transition:transform .2s;font-size:.8rem;flex-shrink:0;margin-left:auto}
-.endpoint.open .chevron{transform:rotate(180deg)}
-.endpoint-body{display:none;border-top:1px solid var(--border);padding:1rem}
+.chevron{color:var(--text3);transition:transform .25s ease;font-size:.7rem;flex-shrink:0;margin-left:auto}
+.endpoint.open .chevron{transform:rotate(180deg);color:var(--accent)}
+.endpoint-body{display:none;border-top:1px solid var(--border);padding:1rem;background:var(--surface3)}
 .endpoint.open .endpoint-body{display:block}
-.params-table{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:.75rem;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.params-table th{text-align:left;color:var(--text2);font-weight:600;padding:.5rem .75rem;border-bottom:1px solid var(--border);white-space:nowrap}
-.params-table td{padding:.5rem .75rem;border-bottom:1px solid var(--border);vertical-align:top}
-.params-table .param-name{font-family:monospace;color:var(--accent)}
-.params-table .param-type{color:var(--text2);font-size:.8rem}
-.params-table .required{color:var(--red);font-size:.7rem;margin-left:.25rem}
-.tab-bar{display:flex;flex-wrap:wrap;gap:0;margin-top:1rem;border-bottom:1px solid var(--border)}
-.tab-btn{background:none;border:none;color:var(--text2);font-family:var(--font);font-size:.85rem;min-height:44px;padding:.5rem .9rem;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+.endpoint-body h4{font-size:.75rem!important;letter-spacing:.05em;text-transform:uppercase;color:var(--text3)!important;margin-bottom:.35rem!important}
+
+.params-table{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:.5rem;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.params-table th{text-align:left;color:var(--text3);font-weight:600;font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;padding:.45rem .75rem;border-bottom:1px solid var(--border);white-space:nowrap}
+.params-table td{padding:.55rem .75rem;border-bottom:1px solid var(--border);vertical-align:top}
+.params-table tr:last-child td{border-bottom:none}
+.params-table .param-name{font-family:var(--mono);color:var(--accent);font-weight:600}
+.params-table .param-type{color:var(--text2);font-size:.78rem;font-family:var(--mono)}
+.params-table .required{color:var(--red);font-size:.62rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-left:.35rem;vertical-align:middle}
+
+.tab-bar{display:flex;flex-wrap:wrap;gap:.15rem;margin-top:1.1rem;border-bottom:1px solid var(--border)}
+.tab-btn{background:none;border:none;color:var(--text2);font-family:var(--font);font-size:.85rem;font-weight:500;min-height:44px;padding:.5rem .9rem;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .2s,border-color .2s}
 .tab-btn:hover{color:var(--text)}
+.tab-btn:focus-visible{outline:none;box-shadow:var(--ring);border-radius:6px}
 .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
 .tab-content{display:none;margin-top:1rem}
 .tab-content.active{display:block}
-.code-block{position:relative;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;font-family:monospace;font-size:clamp(.75rem,.65rem + .5vw,.82rem);line-height:1.7;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:pre;color:var(--text2)}
-.code-block.has-copy{padding-top:3.1rem}
+
+.code-block{position:relative;background:#0b0d13;border:1px solid var(--border);border-radius:var(--radius);padding:1rem;font-family:var(--mono);font-size:clamp(.76rem,.68rem + .4vw,.82rem);line-height:1.75;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:pre;color:var(--text2);tab-size:2}
+.code-block.has-copy{padding-top:3.2rem}
 .code-block .str{color:var(--green)}
 .code-block .num{color:var(--orange)}
 .code-block .key{color:var(--accent)}
 .code-block .bool{color:var(--blue)}
 .code-block .null{color:var(--red)}
-.copy-btn{position:absolute;top:.5rem;right:.5rem;min-height:44px;min-width:44px;background:var(--surface);border:1px solid var(--border);color:var(--text2);font-size:.75rem;padding:.3rem .6rem;border-radius:4px;cursor:pointer;transition:all .2s;font-family:var(--font)}
+.copy-btn{position:absolute;top:.5rem;right:.5rem;min-height:44px;min-width:44px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:.75rem;font-weight:500;padding:.3rem .7rem;border-radius:6px;cursor:pointer;transition:color .2s,border-color .2s;font-family:var(--font)}
 .copy-btn:hover{color:var(--text);border-color:var(--accent)}
+.copy-btn:focus-visible{outline:none;box-shadow:var(--ring)}
 .copy-btn.copied{color:var(--green);border-color:var(--green)}
-.try-it{margin-top:1rem}
-.try-it label{display:block;font-size:.8rem;color:var(--text2);margin-bottom:.3rem;margin-top:.75rem}
-.try-it input,.try-it textarea{width:100%;min-height:44px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:.5rem .75rem;color:var(--text);font-family:monospace;font-size:16px;transition:border-color .2s}
-.try-it input:focus,.try-it textarea:focus{outline:none;border-color:var(--accent)}
+
+.try-it{margin-top:.5rem}
+.try-it label{display:block;font-size:.78rem;font-weight:500;color:var(--text2);margin-bottom:.35rem;margin-top:.85rem}
+.try-it input,.try-it textarea{width:100%;min-height:46px;background:var(--surface3);border:1px solid var(--border2);border-radius:var(--radius);padding:.6rem .8rem;color:var(--text);font-family:var(--mono);font-size:16px;transition:border-color .2s,box-shadow .2s}
+.try-it input::placeholder,.try-it textarea::placeholder{color:var(--text3)}
+.try-it input:focus,.try-it textarea:focus{outline:none;border-color:var(--accent);box-shadow:var(--ring)}
 .try-it textarea{min-height:80px;resize:vertical}
-.try-btn{margin-top:1rem;min-height:44px;background:var(--accent);color:#fff;border:none;padding:.6rem 1.5rem;border-radius:var(--radius);font-family:var(--font);font-size:.85rem;font-weight:600;cursor:pointer;transition:background .2s}
-.try-btn:hover{background:var(--accent2)}
+.try-btn{margin-top:1.1rem;min-height:46px;background:var(--accent);color:#12101b;border:none;padding:.65rem 1.5rem;border-radius:var(--radius);font-family:var(--font);font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s,transform .1s}
+.try-btn:hover{background:#b9a3ff}
+.try-btn:active{transform:translateY(1px)}
+.try-btn:focus-visible{outline:none;box-shadow:var(--ring)}
+.try-btn:disabled{opacity:.55;cursor:not-allowed}
 .response-area{margin-top:1rem}
-.status-badge{display:inline-block;font-size:.75rem;font-weight:700;padding:.2rem .5rem;border-radius:4px;margin-bottom:.5rem}
-.status-2xx{background:rgba(74,222,128,.15);color:var(--green)}
-.status-4xx{background:rgba(248,113,113,.15);color:var(--red)}
-.info-box{background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.15);border-radius:var(--radius);padding:.75rem 1rem;font-size:.85rem;color:var(--text2);margin-top:1rem}
-footer{text-align:center;padding:3rem 1rem 2rem;color:var(--text2);font-size:.8rem;border-top:1px solid var(--border);margin-top:3rem}
+.status-badge{display:inline-block;font-family:var(--mono);font-size:.75rem;font-weight:700;padding:.25rem .6rem;border-radius:6px;margin-bottom:.6rem;border:1px solid transparent}
+.status-2xx{background:rgba(74,222,128,.14);color:var(--green);border-color:rgba(74,222,128,.3)}
+.status-4xx{background:rgba(248,113,113,.14);color:var(--red);border-color:rgba(248,113,113,.3)}
+
+footer{text-align:center;padding:3rem 1rem 2rem;color:var(--text3);font-size:.8rem;border-top:1px solid var(--border);margin-top:3.5rem}
+footer a{color:var(--text2)}
+
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+
 @media(min-width:640px){
   .container{padding:2rem 1.5rem}
-  header{padding:2rem 0}
+  header{padding:2.5rem 0 2rem}
   .endpoint-header{flex-wrap:nowrap;padding:1rem 1.25rem}
   .endpoint-path{font-size:.9rem}
   .endpoint-desc{display:inline}
   .chevron{margin-left:0}
   .endpoint-body{padding:1.25rem}
   .params-table{display:table}
-  .tab-btn{padding:.5rem 1rem}
-  .code-block.has-copy{padding-top:1rem}
-  .copy-btn{min-height:0;min-width:0}
+  .tab-btn{padding:.5rem 1.1rem}
 }
 </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <h1>Users API</h1>
-    <p>RESTful API for managing user resources. Supports JSON request and response bodies.</p>
-    <div class="base-url">https://api.example.com/v1</div>
+    <span class="eyebrow"><span class="dot"></span>REST API &middot; v1.0</span>
+    <h1>Tasks API</h1>
+    <p>A RESTful API for managing a list of tasks. Every endpoint speaks JSON and can be run live from this page.</p>
+    <div class="base-url"><span class="tag">BASE</span> <b>/api/tasks</b> <span class="tag">this app's origin</span></div>
   </header>
 
   <div class="section">
     <h2>Authentication</h2>
     <div class="info-box">
-      All endpoints require a Bearer token in the Authorization header.<br>
-      <code style="color:var(--accent)">Authorization: Bearer your_api_key_here</code>
+      <strong>None.</strong> This API is unauthenticated. There is no API key or
+      Authorization header, so every endpoint is open. Don't put anything sensitive
+      behind it as-is.
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>The task object</h2>
+    <div class="info-box">
+      Each task has the shape
+      <code>{ id, title, status, priority, createdAt, updatedAt }</code>.
+      <div style="margin-top:.7rem">
+        <code>status</code> is one of
+        <span class="pill">todo</span><span class="pill">in_progress</span><span class="pill">done</span>
+      </div>
+      <div style="margin-top:.5rem">
+        <code>priority</code> is one of
+        <span class="pill">low</span><span class="pill">medium</span><span class="pill">high</span>
+      </div>
     </div>
   </div>
 
@@ -107,107 +177,103 @@ footer{text-align:center;padding:3rem 1rem 2rem;color:var(--text2);font-size:.8r
     <div id="endpoints"></div>
   </div>
 </div>
-<footer>Users API v1.0 -- Interactive Documentation</footer>
+<footer>Tasks API v1.0 · Interactive documentation</footer>
 
 <script>
+// Each tryField carries an `in` telling the Try It handler where the value
+// goes: 'path' (fills :id), 'query' (querystring), or 'body' (JSON body).
 const endpoints = [
   {
-    method: 'GET', path: '/users', desc: 'List all users',
+    method: 'GET', path: '/api/tasks', desc: 'List tasks',
     params: [
-      { name: 'page', type: 'integer', required: false, desc: 'Page number (default: 1)' },
+      { name: 'status', type: 'string', required: false, desc: 'Filter by status: todo, in_progress, done' },
       { name: 'limit', type: 'integer', required: false, desc: 'Results per page (default: 20, max: 100)' },
-      { name: 'sort', type: 'string', required: false, desc: 'Sort field: created_at, name, email' },
-      { name: 'order', type: 'string', required: false, desc: 'Sort order: asc or desc' }
+      { name: 'offset', type: 'integer', required: false, desc: 'Number of results to skip (default: 0)' }
     ],
-    curl: `curl -X GET "https://api.example.com/v1/users?page=1&limit=10" \\
-  -H "Authorization: Bearer your_api_key_here"`,
+    curl: `curl "http://localhost:3000/api/tasks?status=todo&limit=10"`,
     response: { status: 200, body: {
-      data: [
-        { id: "usr_1a2b3c4d", name: "Sarah Chen", email: "sarah@techcorp.io", role: "admin", created_at: "2025-11-14T09:23:00Z" },
-        { id: "usr_5e6f7g8h", name: "Marcus Rivera", email: "marcus@designlab.co", role: "member", created_at: "2025-12-02T14:45:00Z" }
-      ],
-      meta: { page: 1, limit: 10, total: 47, pages: 5 }
+      total: 10,
+      items: [
+        { id: "1", title: "Draft the launch announcement", status: "in_progress", priority: "high", createdAt: "2026-07-08T09:23:00Z", updatedAt: "2026-07-08T09:23:00Z" },
+        { id: "2", title: "Review pull request #142", status: "todo", priority: "medium", createdAt: "2026-07-08T09:22:00Z", updatedAt: "2026-07-08T09:22:00Z" }
+      ]
     }},
     tryFields: [
-      { name: 'page', label: 'Page', placeholder: '1' },
-      { name: 'limit', label: 'Limit', placeholder: '10' }
+      { name: 'status', label: 'Status (optional)', placeholder: 'todo', in: 'query' },
+      { name: 'limit', label: 'Limit (optional)', placeholder: '10', in: 'query' },
+      { name: 'offset', label: 'Offset (optional)', placeholder: '0', in: 'query' }
     ]
   },
   {
-    method: 'GET', path: '/users/:id', desc: 'Get a single user',
+    method: 'GET', path: '/api/tasks/:id', desc: 'Get a single task',
     params: [
-      { name: 'id', type: 'string', required: true, desc: 'User ID (e.g. usr_1a2b3c4d)' }
+      { name: 'id', type: 'string', required: true, desc: 'Task ID (e.g. 1). Returns 404 if not found.' }
     ],
-    curl: `curl -X GET "https://api.example.com/v1/users/usr_1a2b3c4d" \\
-  -H "Authorization: Bearer your_api_key_here"`,
-    response: { status: 200, body: {
-      data: { id: "usr_1a2b3c4d", name: "Sarah Chen", email: "sarah@techcorp.io", role: "admin", avatar_url: "https://cdn.example.com/avatars/sarah.jpg", created_at: "2025-11-14T09:23:00Z", updated_at: "2026-01-08T11:30:00Z" }
-    }},
+    curl: `curl "http://localhost:3000/api/tasks/1"`,
+    response: { status: 200, body:
+      { id: "1", title: "Draft the launch announcement", status: "in_progress", priority: "high", createdAt: "2026-07-08T09:23:00Z", updatedAt: "2026-07-08T09:23:00Z" }
+    },
     tryFields: [
-      { name: 'id', label: 'User ID', placeholder: 'usr_1a2b3c4d' }
+      { name: 'id', label: 'Task ID', placeholder: '1', in: 'path' }
     ]
   },
   {
-    method: 'POST', path: '/users', desc: 'Create a new user',
+    method: 'POST', path: '/api/tasks', desc: 'Create a task',
     params: [
-      { name: 'name', type: 'string', required: true, desc: 'Full name (2-100 characters)' },
-      { name: 'email', type: 'string', required: true, desc: 'Valid email address (must be unique)' },
-      { name: 'role', type: 'string', required: false, desc: 'User role: admin, member, viewer (default: member)' },
-      { name: 'password', type: 'string', required: true, desc: 'Minimum 8 characters' }
+      { name: 'title', type: 'string', required: true, desc: 'Task title (1-200 characters)' },
+      { name: 'status', type: 'string', required: false, desc: 'todo, in_progress, done (default: todo)' },
+      { name: 'priority', type: 'string', required: false, desc: 'low, medium, high (default: medium)' }
     ],
-    curl: `curl -X POST "https://api.example.com/v1/users" \\
-  -H "Authorization: Bearer your_api_key_here" \\
+    curl: `curl -X POST "http://localhost:3000/api/tasks" \\
   -H "Content-Type: application/json" \\
   -d '{
-    "name": "Jordan Park",
-    "email": "jordan@startup.dev",
-    "role": "member",
-    "password": "securepass123"
+    "title": "Ship the public API beta",
+    "status": "todo",
+    "priority": "high"
   }'`,
-    response: { status: 201, body: {
-      data: { id: "usr_9i0j1k2l", name: "Jordan Park", email: "jordan@startup.dev", role: "member", created_at: "2026-02-17T22:00:00Z" }
-    }},
+    response: { status: 201, body:
+      { id: "11", title: "Ship the public API beta", status: "todo", priority: "high", createdAt: "2026-07-08T22:00:00Z", updatedAt: "2026-07-08T22:00:00Z" }
+    },
     tryFields: [
-      { name: 'name', label: 'Name', placeholder: 'Jordan Park' },
-      { name: 'email', label: 'Email', placeholder: 'jordan@startup.dev' },
-      { name: 'role', label: 'Role', placeholder: 'member' }
+      { name: 'title', label: 'Title', placeholder: 'Ship the public API beta', in: 'body' },
+      { name: 'status', label: 'Status (optional)', placeholder: 'todo', in: 'body' },
+      { name: 'priority', label: 'Priority (optional)', placeholder: 'high', in: 'body' }
     ],
     bodyField: true
   },
   {
-    method: 'PUT', path: '/users/:id', desc: 'Update a user',
+    method: 'PUT', path: '/api/tasks/:id', desc: 'Update a task (partial merge; PATCH also works)',
     params: [
-      { name: 'id', type: 'string', required: true, desc: 'User ID' },
-      { name: 'name', type: 'string', required: false, desc: 'Updated name' },
-      { name: 'email', type: 'string', required: false, desc: 'Updated email' },
-      { name: 'role', type: 'string', required: false, desc: 'Updated role' }
+      { name: 'id', type: 'string', required: true, desc: 'Task ID' },
+      { name: 'title', type: 'string', required: false, desc: 'Updated title' },
+      { name: 'status', type: 'string', required: false, desc: 'Updated status' },
+      { name: 'priority', type: 'string', required: false, desc: 'Updated priority' }
     ],
-    curl: `curl -X PUT "https://api.example.com/v1/users/usr_1a2b3c4d" \\
-  -H "Authorization: Bearer your_api_key_here" \\
+    curl: `curl -X PUT "http://localhost:3000/api/tasks/1" \\
   -H "Content-Type: application/json" \\
   -d '{
-    "name": "Sarah Chen-Williams",
-    "role": "admin"
+    "status": "done"
   }'`,
-    response: { status: 200, body: {
-      data: { id: "usr_1a2b3c4d", name: "Sarah Chen-Williams", email: "sarah@techcorp.io", role: "admin", updated_at: "2026-02-17T22:05:00Z" }
-    }},
+    response: { status: 200, body:
+      { id: "1", title: "Draft the launch announcement", status: "done", priority: "high", createdAt: "2026-07-08T09:23:00Z", updatedAt: "2026-07-08T22:05:00Z" }
+    },
     tryFields: [
-      { name: 'id', label: 'User ID', placeholder: 'usr_1a2b3c4d' },
-      { name: 'name', label: 'Name', placeholder: 'Sarah Chen-Williams' }
+      { name: 'id', label: 'Task ID', placeholder: '1', in: 'path' },
+      { name: 'title', label: 'Title (optional)', placeholder: '', in: 'body' },
+      { name: 'status', label: 'Status (optional)', placeholder: 'done', in: 'body' },
+      { name: 'priority', label: 'Priority (optional)', placeholder: '', in: 'body' }
     ],
     bodyField: true
   },
   {
-    method: 'DELETE', path: '/users/:id', desc: 'Delete a user',
+    method: 'DELETE', path: '/api/tasks/:id', desc: 'Delete a task',
     params: [
-      { name: 'id', type: 'string', required: true, desc: 'User ID to delete' }
+      { name: 'id', type: 'string', required: true, desc: 'Task ID to delete. Returns 204 on success, 404 if not found.' }
     ],
-    curl: `curl -X DELETE "https://api.example.com/v1/users/usr_1a2b3c4d" \\
-  -H "Authorization: Bearer your_api_key_here"`,
-    response: { status: 200, body: { message: "User usr_1a2b3c4d has been permanently deleted." }},
+    curl: `curl -X DELETE "http://localhost:3000/api/tasks/1"`,
+    response: { status: 204, body: null },
     tryFields: [
-      { name: 'id', label: 'User ID', placeholder: 'usr_1a2b3c4d' }
+      { name: 'id', label: 'Task ID', placeholder: '1', in: 'path' }
     ]
   }
 ];
@@ -224,11 +290,27 @@ function syntaxHL(obj) {
 
 function escapeHTML(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+function statusLabel(code) {
+  return { 200: 'OK', 201: 'Created', 204: 'No Content', 400: 'Bad Request', 404: 'Not Found', 500: 'Internal Server Error' }[code] || '';
+}
+
+// The cURL snippets are authored against localhost for local dev; on a
+// deployed app, rewrite them to this app's real origin so copied commands
+// actually hit the live API. (The "Try It" console already uses relative
+// paths, so it works live regardless.)
+const ORIGIN = location.origin;
+const liveCurl = (s) => s.replace(/https?:\/\/localhost:3000/g, ORIGIN);
+
+// Show the real base URL in the header pill too.
+const baseUrlEl = document.querySelector('.base-url .tag:last-child');
+if (baseUrlEl) baseUrlEl.textContent = ORIGIN;
+
 const container = document.getElementById('endpoints');
 endpoints.forEach((ep, i) => {
   const mc = 'method-' + ep.method.toLowerCase();
   const statusClass = ep.response.status < 300 ? 'status-2xx' : 'status-4xx';
   const id = 'ep-' + i;
+  const curl = liveCurl(ep.curl);
 
   let paramsHTML = '';
   if (ep.params.length) {
@@ -257,12 +339,12 @@ endpoints.forEach((ep, i) => {
         <button class="tab-btn" data-tab="${id}-try">Try It</button>
       </div>
       <div class="tab-content active" id="${id}-curl">
-        <div class="code-block has-copy"><button class="copy-btn" data-copy="${id}-curl-raw">Copy</button>${escapeHTML(ep.curl)}</div>
-        <textarea id="${id}-curl-raw" style="display:none">${ep.curl}</textarea>
+        <div class="code-block has-copy"><button class="copy-btn" data-copy="${id}-curl-raw">Copy</button>${escapeHTML(curl)}</div>
+        <textarea id="${id}-curl-raw" style="display:none">${curl}</textarea>
       </div>
       <div class="tab-content" id="${id}-response">
-        <span class="status-badge ${statusClass}">${ep.response.status} ${ep.response.status===200?'OK':ep.response.status===201?'Created':'Error'}</span>
-        <div class="code-block">${syntaxHL(ep.response.body)}</div>
+        <span class="status-badge ${statusClass}">${ep.response.status} ${statusLabel(ep.response.status)}</span>
+        <div class="code-block">${ep.response.body === null ? '(no content)' : syntaxHL(ep.response.body)}</div>
       </div>
       <div class="tab-content" id="${id}-try">
         <div class="try-it">
@@ -303,12 +385,67 @@ document.addEventListener('click', e => {
     });
   }
   if (e.target.classList.contains('try-btn')) {
-    const idx = parseInt(e.target.dataset.ep);
-    const ep = endpoints[idx];
-    const resultDiv = document.getElementById('ep-'+idx+'-result');
-    resultDiv.innerHTML = `<span class="status-badge status-2xx">${ep.response.status} ${ep.response.status===200?'OK':'Created'}</span><div class="code-block">${syntaxHL(ep.response.body)}</div>`;
+    sendRequest(parseInt(e.target.dataset.ep), e.target);
   }
 });
+
+// Actually hits the live endpoint on this origin — builds the URL, query
+// string and JSON body from the inputs, then renders the real status +
+// response. syntaxHL/escapeHTML escape &<> so live data can't inject markup.
+async function sendRequest(idx, btn) {
+  const ep = endpoints[idx];
+  const id = 'ep-' + idx;
+  const resultDiv = document.getElementById(id + '-result');
+
+  let path = ep.path;
+  const query = new URLSearchParams();
+  const body = {};
+  let hasBody = false;
+  ep.tryFields.forEach(f => {
+    const el = document.getElementById(id + '-' + f.name);
+    const val = el ? el.value.trim() : '';
+    if (f.in === 'path') {
+      path = path.replace(':' + f.name, encodeURIComponent(val));
+    } else if (f.in === 'query') {
+      if (val !== '') query.set(f.name, val);
+    } else if (f.in === 'body') {
+      if (val !== '') { body[f.name] = val; hasBody = true; }
+    }
+  });
+
+  let url = path;
+  const qs = query.toString();
+  if (qs) url += '?' + qs;
+
+  const opts = { method: ep.method };
+  if (ep.bodyField) {
+    opts.headers = { 'Content-Type': 'application/json' };
+    opts.body = JSON.stringify(hasBody ? body : {});
+  }
+
+  btn.disabled = true;
+  resultDiv.innerHTML = `<div class="code-block">Sending ${ep.method} ${escapeHTML(url)} ...</div>`;
+  try {
+    const res = await fetch(url, opts);
+    const statusClass = res.status < 300 ? 'status-2xx' : 'status-4xx';
+    const text = await res.text();
+    let bodyHTML;
+    if (res.status === 204 || text === '') {
+      bodyHTML = '<div class="code-block">(no content)</div>';
+    } else {
+      try {
+        bodyHTML = `<div class="code-block">${syntaxHL(JSON.parse(text))}</div>`;
+      } catch (_) {
+        bodyHTML = `<div class="code-block">${escapeHTML(text)}</div>`;
+      }
+    }
+    resultDiv.innerHTML = `<span class="status-badge ${statusClass}">${res.status} ${statusLabel(res.status) || escapeHTML(res.statusText)}</span>${bodyHTML}`;
+  } catch (err) {
+    resultDiv.innerHTML = `<span class="status-badge status-4xx">Request failed</span><div class="code-block">${escapeHTML(err.message)}</div>`;
+  } finally {
+    btn.disabled = false;
+  }
+}
 </script>
 </body>
 </html>

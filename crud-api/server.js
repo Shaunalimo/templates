@@ -6,7 +6,7 @@ const tasksRouter = require('./routes/tasks');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json({ limit: '1mb' }));
+app.use(express.json({ limit: '10mb' })); // fits a base64 phone photo; shrink photos first with public/shrink-photo.js
 
 // Request log: one line per request — id, method, path, status, duration.
 // Plain console output keeps the dependency footprint minimal.

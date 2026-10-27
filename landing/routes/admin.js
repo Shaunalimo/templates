@@ -1,7 +1,16 @@
 const express = require('express');
+const crypto = require('crypto');
 const subscribers = require('../lib/subscribers');
 
 const router = express.Router();
+
+// Constant-time password check. Hashing both sides to a fixed length first
+// lets timingSafeEqual run over equal-length buffers and hides length too.
+function passwordMatches(candidate, expected) {
+  const a = crypto.createHash('sha256').update(String(candidate)).digest();
+  const b = crypto.createHash('sha256').update(String(expected)).digest();
+  return crypto.timingSafeEqual(a, b);
+}
 
 // GET /admin/subscribers — Basic-auth-protected list of captured emails.
 // Set ADMIN_PASSWORD in env vars (VibeKit /env) to enable; 503 until then.
@@ -18,7 +27,7 @@ function requirePassword(req, res, next) {
   }
   const decoded = Buffer.from(match[1], 'base64').toString('utf8');
   const [, password] = decoded.split(':');
-  if (password !== expected) {
+  if (!passwordMatches(password, expected)) {
     res.set('WWW-Authenticate', 'Basic realm="admin"');
     return res.status(401).end();
   }

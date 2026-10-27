@@ -13,6 +13,7 @@ Ordered by how often people actually build them.
 | Template | Start here when you want… |
 |----------|---------------------------|
 | **dashboard** | Charts, tables, and sidebar nav over your data — the metric-at-a-glance app. |
+| **game** | A 2D browser game with touch and keyboard controls, sound, and a real leaderboard. |
 | **landing** | A marketing page with a real, working signup/contact form (submissions persist). |
 | **ecommerce** | A storefront with products and a cart, ready to wire up checkout. |
 | **tracker** | A list/CRUD app — todos, habits, budgets, inventory — with running totals. |
@@ -21,6 +22,8 @@ Ordered by how often people actually build them.
 | **form** | A focused form (contact, signup, feedback) with submissions you can read. |
 | **blog** | A content site with posts and pages. |
 | **crud-api** | A REST API with CRUD endpoints — the backend, no frontend assumptions. |
+
+When no starter fits, the agent begins from a bare scaffold instead: **blank** (a web app with a JSON API and storage), **mobile** (an installable phone web app with a tab bar), or **expo** (a native iPhone and Android app).
 
 ## How it works
 

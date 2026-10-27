@@ -33,7 +33,7 @@ router.get('/cart', (req, res) => {
 router.post('/cart', (req, res) => {
   const { productId, quantity } = req.body || {};
   if (!productId) return res.status(400).json({ error: 'product_id_required' });
-  const qty = Math.max(1, parseInt(quantity, 10) || 1);
+  const qty = Math.min(99, Math.max(1, parseInt(quantity, 10) || 1));
   if (!products.getById(productId)) return res.status(404).json({ error: 'product_not_found' });
   const cart = ensureCart(req);
   const existing = cart.find((i) => i.productId === productId);
@@ -48,10 +48,11 @@ router.patch('/cart/:productId', (req, res) => {
   const item = cart.find((i) => i.productId === req.params.productId);
   if (!item) return res.status(404).json({ error: 'item_not_in_cart' });
   const qty = parseInt(quantity, 10);
+  if (!Number.isFinite(qty)) return res.status(400).json({ error: 'invalid_quantity' });
   if (qty <= 0) {
     req.session.cart = cart.filter((i) => i.productId !== req.params.productId);
   } else {
-    item.quantity = qty;
+    item.quantity = Math.min(qty, 99);
   }
   res.json(summary(hydrate(req.session.cart)));
 });

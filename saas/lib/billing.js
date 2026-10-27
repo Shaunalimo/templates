@@ -36,9 +36,10 @@ async function createCheckoutSession({ plan, user, origin }) {
     customer_email: user.email,
     success_url: `${origin}/dashboard.html?upgraded=1`,
     cancel_url: `${origin}/pricing.html`,
+    client_reference_id: user.id,
     metadata: { userId: user.id, plan },
   });
   return { configured: true, url: sessionObj.url };
 }
 
-module.exports = { createCheckoutSession, PLANS };
+module.exports = { createCheckoutSession, getStripe, PLANS };

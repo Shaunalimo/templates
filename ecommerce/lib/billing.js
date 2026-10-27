@@ -14,7 +14,7 @@ async function createCheckoutSession({ lineItems, origin }) {
   if (!stripe) {
     return {
       configured: false,
-      message: 'Set STRIPE_SECRET_KEY in env vars to enable real checkout. Until then, the order flow simulates success.',
+      message: "Checkout isn't live yet — set STRIPE_SECRET_KEY to accept payments.",
     };
   }
   const sessionObj = await stripe.checkout.sessions.create({
@@ -27,10 +27,17 @@ async function createCheckoutSession({ lineItems, origin }) {
       },
       quantity: li.quantity,
     })),
-    success_url: `${origin}/?ordered=1`,
+    success_url: `${origin}/?ordered=1&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/cart.html`,
   });
   return { configured: true, url: sessionObj.url };
 }
 
-module.exports = { createCheckoutSession };
+async function isSessionPaid(sessionId) {
+  const stripe = getStripe();
+  if (!stripe) return false;
+  const sessionObj = await stripe.checkout.sessions.retrieve(sessionId);
+  return !!sessionObj && sessionObj.payment_status === 'paid';
+}
+
+module.exports = { createCheckoutSession, isSessionPaid };

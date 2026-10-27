@@ -1,6 +1,6 @@
 # SaaS Starter
 
-A real working SaaS scaffold: email/password auth, signed sessions, a Stripe-ready billing endpoint, and a dashboard shell. JSON-file persistence — no database addon needed.
+A real working SaaS scaffold: email/password auth, signed sessions, Stripe checkout + a fulfillment webhook (set `STRIPE_WEBHOOK_SECRET` to fulfill upgrades), and a dashboard shell. JSON-file persistence — no database addon needed.
 
 ## What's inside
 
@@ -37,7 +37,10 @@ The checkout endpoint is wired up but lazy. Without env vars it returns a config
 - `STRIPE_SECRET_KEY` — your Stripe secret key
 - `STRIPE_PRICE_PRO` — Stripe Price ID for the Pro plan
 - `STRIPE_PRICE_TEAM` — Stripe Price ID for the Team plan
-- `SESSION_SECRET` — random string used to sign session cookies (highly recommended in production)
+- `STRIPE_WEBHOOK_SECRET` — signing secret for the `POST /api/webhook` endpoint. **Until this is set the webhook fails closed (503) and a charged user is never upgraded.** Point a Stripe webhook at `/api/webhook` for the `checkout.session.completed` event, then paste its signing secret here.
+- `SESSION_SECRET` — random string used to sign session cookies. **Required in production:** if unset, a random secret is generated at startup and sessions reset on every restart.
+
+Behind TLS (e.g. VibeKit's nginx), set `NODE_ENV=production` so the session cookie is marked `Secure`.
 
 ## Persistence
 

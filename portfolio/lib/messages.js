@@ -12,12 +12,28 @@ function ensure() {
 
 function readAll() {
   ensure();
-  try { return JSON.parse(fs.readFileSync(FILE, 'utf8')); } catch (_) { return []; }
+  try {
+    return JSON.parse(fs.readFileSync(FILE, 'utf8'));
+  } catch (err) {
+    // Never silently clobber: preserve the corrupt file for recovery, then start clean.
+    try {
+      const corrupt = FILE + '.corrupt.' + Date.now();
+      fs.renameSync(FILE, corrupt);
+      console.error(`[messages] corrupt store, moved to ${corrupt}:`, err.message);
+    } catch (renameErr) {
+      console.error('[messages] corrupt store, could not preserve it:', renameErr.message);
+    }
+    return [];
+  }
 }
 
 function writeAll(rows) {
   ensure();
-  fs.writeFileSync(FILE, JSON.stringify(rows, null, 2), 'utf8');
+  // Atomic write: fully write a temp file, then rename over the target so a
+  // crash mid-write can never leave a truncated messages.json.
+  const tmp = FILE + '.tmp';
+  fs.writeFileSync(tmp, JSON.stringify(rows, null, 2), 'utf8');
+  fs.renameSync(tmp, FILE);
 }
 
 function add({ name, email, message }) {

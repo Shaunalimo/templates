@@ -3,7 +3,43 @@ const messages = require('../lib/messages');
 
 const router = express.Router();
 
+// Simple dependency-free per-IP throttle so the JSON store can't be flooded.
+// Allows a short burst, then a minimum interval between submissions per IP.
+const MIN_INTERVAL_MS = 5000; // one submission per IP per 5s
+const BURST = 3;              // ...but allow a small initial burst
+const WINDOW_MS = 60 * 1000; // over which the burst count resets
+const hits = new Map();       // ip -> { count, first, last }
+
+function rateLimited(ip) {
+  const now = Date.now();
+  const rec = hits.get(ip);
+  if (!rec || now - rec.first > WINDOW_MS) {
+    hits.set(ip, { count: 1, first: now, last: now });
+    return false;
+  }
+  if (rec.count < BURST) {
+    rec.count += 1;
+    rec.last = now;
+    return false;
+  }
+  if (now - rec.last < MIN_INTERVAL_MS) return true;
+  rec.last = now;
+  return false;
+}
+
+// Opportunistically drop stale entries so the map can't grow unbounded.
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, rec] of hits) {
+    if (now - rec.last > WINDOW_MS) hits.delete(ip);
+  }
+}, WINDOW_MS).unref();
+
 router.post('/contact', (req, res) => {
+  const ip = req.ip || req.connection?.remoteAddress || 'unknown';
+  if (rateLimited(ip)) {
+    return res.status(429).json({ error: 'rate_limited', message: 'Too many submissions — please wait a moment and try again.' });
+  }
   const { name, email, message } = req.body || {};
   const errors = {};
   const cleanName = String(name || '').trim();

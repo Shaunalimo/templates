@@ -1,7 +1,7 @@
 {
   "name": "crud-api",
   "version": "1.0.0",
-  "description": "Express REST API with full CRUD endpoints and an in-memory store.",
+  "description": "Express REST API with full CRUD endpoints and a JSON-file persisted store.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

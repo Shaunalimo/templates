@@ -13,8 +13,8 @@ router.post('/subscribe', (req, res) => {
   if (!EMAIL_RE.test(email)) {
     return res.status(400).json({ ok: false, error: 'invalid_email', message: 'Enter a valid email address.' });
   }
-  const { duplicate } = subscribers.add(email);
-  res.json({ ok: true, duplicate, count: subscribers.list().length });
+  const { duplicate, count } = subscribers.add(email);
+  res.json({ ok: true, duplicate, count });
 });
 
 module.exports = router;

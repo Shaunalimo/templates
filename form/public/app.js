@@ -18,6 +18,7 @@ function showStep(n) {
     lbl.classList.toggle('done', sn < n);
   });
   progressBar.style.width = `${(n / totalSteps) * 100}%`;
+  progressBar.setAttribute('aria-valuenow', String(n));
   const firstField = form.querySelector(`.step-section[data-step="${n}"] input, .step-section[data-step="${n}"] select, .step-section[data-step="${n}"] textarea`);
   if (firstField) setTimeout(() => firstField.focus(), 100);
   if (n === totalSteps) renderReview();
@@ -30,11 +31,17 @@ function validateStep(n) {
     const email = form.elements.email.value.trim();
     const role = form.elements.role.value;
     if (!name) { ok = false; markError(form.elements.name, 'Required'); } else clearError(form.elements.name);
-    if (!email || !/\S+@\S+\.\S+/.test(email)) { ok = false; markError(form.elements.email, 'Enter a valid email'); } else clearError(form.elements.email);
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { ok = false; markError(form.elements.email, 'Enter a valid email'); } else clearError(form.elements.email);
     if (!role) { ok = false; markError(form.elements.role, 'Choose one'); } else clearError(form.elements.role);
   } else if (n === 2) {
-    const teamSize = form.elements.teamSize.value;
-    if (!teamSize || parseInt(teamSize, 10) < 1) { ok = false; markError(form.elements.teamSize, 'Enter a number'); } else clearError(form.elements.teamSize);
+    const teamSizeRaw = form.elements.teamSize.value.trim();
+    const teamSize = Number(teamSizeRaw);
+    // Mirror the server's zod: integer, 1..100000.
+    if (!teamSizeRaw || !Number.isInteger(teamSize) || teamSize < 1) {
+      ok = false; markError(form.elements.teamSize, 'Enter a whole number of 1 or more');
+    } else if (teamSize > 100000) {
+      ok = false; markError(form.elements.teamSize, 'Must be 100000 or less');
+    } else clearError(form.elements.teamSize);
     const features = Array.from(form.querySelectorAll('input[name="features"]:checked'));
     if (!features.length) { ok = false; markFieldset(form.querySelector('fieldset'), 'Pick at least one'); } else clearFieldset(form.querySelector('fieldset'));
   } else if (n === 3) {
@@ -87,7 +94,9 @@ document.querySelectorAll('.star').forEach((star) => {
     const val = parseInt(star.dataset.val, 10);
     form.elements.rating.value = val;
     document.querySelectorAll('.star').forEach((s, idx) => {
-      s.classList.toggle('on', idx < val);
+      const on = idx < val;
+      s.classList.toggle('on', on);
+      s.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
   });
 });
@@ -112,17 +121,32 @@ function renderReview() {
     <dt>Email</dt><dd>${escape(data.email)}</dd>
     <dt>Role</dt><dd>${escape(data.role)}</dd>
     <dt>Team size</dt><dd>${data.teamSize}</dd>
-    <dt>Features</dt><dd>${data.features.map(escape).join(', ') || '—'}</dd>
+    <dt>Features</dt><dd>${data.features.map(escape).join(', ') || '–'}</dd>
     <dt>Rating</dt><dd>${'★'.repeat(data.rating)}${'☆'.repeat(5 - data.rating)}</dd>
-    <dt>Notes</dt><dd>${escape(data.notes) || '—'}</dd>`;
+    <dt>Notes</dt><dd>${escape(data.notes) || '–'}</dd>`;
 }
 
 function escape(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 }
 
+// Pressing Enter in a text field on steps 1–3 would implicitly submit the
+// whole form (all steps live under one <form>), posting incomplete data.
+// Intercept Enter on non-final steps and advance/validate instead.
+form.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  if (e.target && e.target.tagName === 'TEXTAREA') return; // allow newlines
+  if (currentStep < totalSteps) {
+    e.preventDefault();
+    const nextBtn = form.querySelector(`.step-section[data-step="${currentStep}"] [data-next]`);
+    if (nextBtn) nextBtn.click();
+  }
+});
+
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
+  // Only the final Review step may submit — guards against any implicit submit.
+  if (currentStep !== totalSteps) return;
   const err = document.getElementById('submit-error');
   err.hidden = true;
   const res = await fetch('/api/submit', {

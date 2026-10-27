@@ -36,6 +36,8 @@ Submissions land in `lib/data/messages.json` on EFS — they survive restarts.
 
 Set `ADMIN_PASSWORD` as an env var (VibeKit `/env`). Then hit `/admin/messages` with HTTP Basic auth (any username, the password you set). Returns JSON.
 
+If you build an HTML admin viewer, run every stored value through `escapeHtml()` from `lib/html.js` before putting it in the page — contact input is untrusted, so unescaped output is stored XSS.
+
 ## Ask the agent
 
 - "Send me an email when someone submits the contact form."

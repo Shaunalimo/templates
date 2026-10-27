@@ -4,13 +4,33 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Notes</title>
+    <meta name="description" content="A blog with posts, categories, and a clean reading experience.">
+    <meta name="theme-color" content="#fdfcfa">
+    <link rel="icon" href="data:image/svg+xml,<svg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22><rect%20x=%2212%22%20y=%2212%22%20width=%2276%22%20height=%2276%22%20rx=%2218%22%20fill=%22%23d97706%22/></svg>">
+    <!-- Social share preview (Open Graph + Twitter). When you brand this app, update the
+         title/description here and swap og:image & twitter:image for your own 1200x630 image. -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Notes">
+    <meta property="og:description" content="A blog with posts, categories, and a clean reading experience.">
+    <meta property="og:image" content="https://vibekit.bot/public/og-vibekit.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Notes">
+    <meta name="twitter:description" content="A blog with posts, categories, and a clean reading experience.">
+    <meta name="twitter:image" content="https://vibekit.bot/public/og-vibekit.png">
 <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
 <header class="nav">
   <a class="brand" href="/">Notes</a>
+  <form class="nav-search" action="/" role="search">
+    <svg class="search-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input id="search" name="q" type="search" placeholder="Search posts, tags, authors…" autocomplete="off" aria-label="Search posts" />
+    <button id="search-clear" class="search-clear" type="button" aria-label="Clear search" hidden>×</button>
+  </form>
   <nav>
-    <a href="#categories" id="cat-toggle">Categories</a>
+    <a href="/feed.xml">RSS</a>
   </nav>
 </header>
 
@@ -24,11 +44,17 @@
     <button class="cat active" data-cat="">All</button>
   </section>
 
+  <div class="tag-cloud" id="tag-cloud" aria-label="Tags"></div>
+
+  <section id="featured"></section>
+
+  <div class="result-info muted" id="result-info" hidden></div>
+
   <section class="post-list" id="post-list"></section>
 </main>
 
 <footer>
-  <span>Notes — your blog scaffold to fork.</span>
+  <span>Notes. A blog scaffold to fork and make your own. · <a href="/feed.xml">RSS</a> · <a href="/admin">Admin</a></span>
 </footer>
 
 <script src="/app.js"></script>

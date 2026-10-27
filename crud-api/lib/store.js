@@ -19,9 +19,16 @@ function ensure() {
 
 function readDb() {
   ensure();
+  const raw = fs.readFileSync(FILE, 'utf8');
   try {
-    return JSON.parse(fs.readFileSync(FILE, 'utf8'));
-  } catch (_) {
+    return JSON.parse(raw);
+  } catch (err) {
+    // Don't silently reseed over a corrupt-but-maybe-recoverable file — the
+    // next mutation would overwrite it with seed data and wipe real user
+    // rows. Back it up first, then fall back to a fresh seed.
+    const backup = FILE + '.corrupt.' + Date.now();
+    try { fs.renameSync(FILE, backup); } catch (_) {}
+    console.error(`tasks.json failed to parse (${err.message}); moved to ${backup}, reseeding.`);
     const seeded = seedRows();
     return { nextId: seeded.length + 1, tasks: seeded };
   }
@@ -29,7 +36,11 @@ function readDb() {
 
 function writeDb(db) {
   ensure();
-  fs.writeFileSync(FILE, JSON.stringify(db, null, 2));
+  // Atomic write: serialize to a temp file, then rename into place so a
+  // crash mid-write can never leave a half-written tasks.json.
+  const tmp = FILE + '.tmp';
+  fs.writeFileSync(tmp, JSON.stringify(db, null, 2));
+  fs.renameSync(tmp, FILE);
 }
 
 function seedRows() {

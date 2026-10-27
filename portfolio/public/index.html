@@ -3,7 +3,22 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Your Name — Portfolio</title>
+<title>Your Name · Portfolio</title>
+    <meta name="description" content="Portfolio showcasing projects, experience, and a way to get in touch.">
+    <meta name="theme-color" content="#0a0a0d">
+    <link rel="icon" href="data:image/svg+xml,<svg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22><rect%20x=%2212%22%20y=%2212%22%20width=%2276%22%20height=%2276%22%20rx=%2218%22%20fill=%22%23f59e0b%22/></svg>">
+    <!-- Social share preview (Open Graph + Twitter). When you brand this app, update the
+         title/description here and swap og:image & twitter:image for your own 1200x630 image. -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Your Name · Portfolio">
+    <meta property="og:description" content="Portfolio showcasing projects, experience, and a way to get in touch.">
+    <meta property="og:image" content="https://vibekit.bot/public/og-vibekit.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Your Name · Portfolio">
+    <meta name="twitter:description" content="Portfolio showcasing projects, experience, and a way to get in touch.">
+    <meta name="twitter:image" content="https://vibekit.bot/public/og-vibekit.png">
 <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
@@ -40,31 +55,24 @@
   <div class="projects">
     <article class="project">
       <div class="project-image grad-1"></div>
-      <h3>Ledger — finance for solo operators</h3>
+      <h3>Ledger: finance for solo operators</h3>
       <p class="muted">Lead designer • 2026</p>
       <p>Built the entire visual system and the multi-account ledger UI for a profitability-tracking tool now used by 2,400+ paying customers.</p>
       <div class="tags"><span>Product design</span><span>Front-end</span><span>SaaS</span></div>
     </article>
     <article class="project">
       <div class="project-image grad-2"></div>
-      <h3>Compass — travel itineraries for editors</h3>
+      <h3>Compass: travel itineraries for editors</h3>
       <p class="muted">Engineer • 2025</p>
       <p>Rewrote the editor as a real-time collaborative document; reduced average save latency from 800ms to 60ms.</p>
       <div class="tags"><span>React</span><span>CRDTs</span><span>Editor</span></div>
     </article>
     <article class="project">
       <div class="project-image grad-3"></div>
-      <h3>Calm — meditation app v2</h3>
+      <h3>Calm: meditation app v2</h3>
       <p class="muted">Design lead • 2024</p>
       <p>Redesigned the home, library, and player. Time-to-first-session dropped 32% in the launch quarter.</p>
       <div class="tags"><span>iOS</span><span>Mobile UX</span><span>Design system</span></div>
-    </article>
-    <article class="project">
-      <div class="project-image grad-4"></div>
-      <h3>Northwind — internal analytics suite</h3>
-      <p class="muted">Designer • 2024</p>
-      <p>Replaced a sprawling internal dashboards graveyard with a single tool. Adoption went from 40% to 91% in six weeks.</p>
-      <div class="tags"><span>Dashboards</span><span>Data viz</span><span>Internal tools</span></div>
     </article>
   </div>
 </section>
@@ -85,7 +93,7 @@
   <h2>Experience</h2>
   <ol class="timeline-list">
     <li>
-      <div class="t-date">2024 — Present</div>
+      <div class="t-date">2024 to Present</div>
       <div class="t-role"><strong>Senior Designer</strong> · Ledger</div>
       <ul>
         <li>Owns the product design surface end-to-end across web + iOS.</li>
@@ -93,7 +101,7 @@
       </ul>
     </li>
     <li>
-      <div class="t-date">2022 — 2024</div>
+      <div class="t-date">2022 – 2024</div>
       <div class="t-role"><strong>Product Designer</strong> · Calm</div>
       <ul>
         <li>Led the iOS redesign that cut TTFV in half.</li>
@@ -101,7 +109,7 @@
       </ul>
     </li>
     <li>
-      <div class="t-date">2019 — 2022</div>
+      <div class="t-date">2019 – 2022</div>
       <div class="t-role"><strong>Front-end Engineer</strong> · Northwind</div>
       <ul>
         <li>Built the data-viz library used across 30+ internal dashboards.</li>
@@ -114,15 +122,15 @@
 <section id="contact" class="contact">
   <div class="contact-text">
     <h2>Let's talk.</h2>
-    <p>Hiring, contracting, or just want to chat about a problem? Drop a line — I read everything.</p>
+    <p>Hiring, contracting, or just want to chat about a problem? Drop a line and I will read every word.</p>
     <p class="muted small">Or reach me on <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>, <a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn</a>.</p>
   </div>
   <form class="contact-form" id="contact-form">
-    <label>Name <input name="name" required maxlength="120" /></label>
-    <label>Email <input type="email" name="email" required /></label>
-    <label>Message <textarea name="message" required maxlength="4000" rows="5"></textarea></label>
+    <label>Name <input name="name" required maxlength="120" placeholder="Your name" autocomplete="name" /></label>
+    <label>Email <input type="email" name="email" required placeholder="you@example.com" autocomplete="email" /></label>
+    <label>Message <textarea name="message" required maxlength="4000" rows="5" placeholder="What can I help with?"></textarea></label>
     <button class="btn primary" type="submit">Send</button>
-    <div id="contact-status" hidden></div>
+    <div id="contact-status" role="status" aria-live="polite" hidden></div>
   </form>
 </section>
 

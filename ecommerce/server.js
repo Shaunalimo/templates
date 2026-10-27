@@ -1,6 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
+const crypto = require('crypto');
 
 const productsRoutes = require('./routes/products');
 const cartRoutes = require('./routes/cart');
@@ -8,9 +9,13 @@ const checkoutRoutes = require('./routes/checkout');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const SESSION_SECRET = process.env.SESSION_SECRET || 'change-me-in-production';
+let SESSION_SECRET = process.env.SESSION_SECRET;
+if (!SESSION_SECRET) {
+  SESSION_SECRET = crypto.randomBytes(32).toString('hex');
+  console.warn('SESSION_SECRET not set — generated an ephemeral secret. Sessions reset on restart; set SESSION_SECRET in env for stable cookies.');
+}
 
-app.use(express.json({ limit: '1mb' }));
+app.use(express.json({ limit: '10mb' })); // fits a base64 phone photo; shrink photos first with public/shrink-photo.js
 app.use(session({
   secret: SESSION_SECRET,
   resave: false,

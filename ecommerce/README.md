@@ -30,7 +30,11 @@ Open http://localhost:3000.
 
 ## Enabling Stripe checkout
 
-Set `STRIPE_SECRET_KEY` as an env var (in VibeKit: `/env`). The checkout endpoint will then create a real Stripe session and redirect.
+Set `STRIPE_SECRET_KEY` as an env var (in VibeKit: `/env`). The checkout endpoint will then create a real Stripe session and redirect. The cart is cleared only after Stripe confirms payment (via `/api/checkout/verify` on the success page) — cancelling on Stripe returns you to an intact cart.
+
+## Sessions
+
+Carts live in the default `express-session` MemoryStore, so they are **per-container and reset on restart/redeploy**. For durable carts, back sessions with a persistent store (out of scope for this starter). Set `SESSION_SECRET` in env to keep cookies valid across restarts; if unset, an ephemeral secret is generated at startup.
 
 ## Ask the agent
 

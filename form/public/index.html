@@ -4,35 +4,56 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Survey</title>
+    <meta name="description" content="A multi-step survey form with validation and a thank-you screen.">
+    <meta name="theme-color" content="#f7f8fb">
+    <link rel="icon" href="data:image/svg+xml,<svg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22><rect%20x=%2212%22%20y=%2212%22%20width=%2276%22%20height=%2276%22%20rx=%2218%22%20fill=%22%235046e5%22/></svg>">
+    <!-- Social share preview (Open Graph + Twitter). When you brand this app, update the
+         title/description here and swap og:image & twitter:image for your own 1200x630 image. -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Survey">
+    <meta property="og:description" content="A multi-step survey form with validation and a thank-you screen.">
+    <meta property="og:image" content="https://vibekit.bot/public/og-vibekit.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Survey">
+    <meta name="twitter:description" content="A multi-step survey form with validation and a thank-you screen.">
+    <meta name="twitter:image" content="https://vibekit.bot/public/og-vibekit.png">
 <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
 <main class="form-shell">
   <div class="card">
     <div class="progress">
-      <div class="bar" id="progress-bar"></div>
-      <div class="step-labels">
-        <span class="step active" data-step="1">1. About you</span>
-        <span class="step" data-step="2">2. Your work</span>
-        <span class="step" data-step="3">3. Feedback</span>
-        <span class="step" data-step="4">4. Review</span>
+      <div class="progress-track">
+        <div class="bar" id="progress-bar" role="progressbar" aria-label="Survey progress" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1"></div>
       </div>
+      <ol class="step-labels">
+        <li class="step active" data-step="1"><span class="dot">1</span><span class="step-name">About you</span></li>
+        <li class="step" data-step="2"><span class="dot">2</span><span class="step-name">Your work</span></li>
+        <li class="step" data-step="3"><span class="dot">3</span><span class="step-name">Feedback</span></li>
+        <li class="step" data-step="4"><span class="dot">4</span><span class="step-name">Review</span></li>
+      </ol>
     </div>
 
     <form id="survey" novalidate>
       <section class="step-section" data-step="1">
         <h1>Tell us about you</h1>
-        <label>Name <input name="name" required maxlength="120" autocomplete="name" /></label>
-        <label>Email <input type="email" name="email" required autocomplete="email" inputmode="email" /></label>
+        <p class="step-desc">A few quick details so we know who we're talking to.</p>
+        <label>Name <input name="name" required maxlength="120" autocomplete="name" placeholder="Jane Doe" /></label>
+        <label>Email <input type="email" name="email" required autocomplete="email" inputmode="email" placeholder="jane@company.com" /></label>
         <label>Your role
-          <select name="role" required>
-            <option value="">Choose…</option>
-            <option value="founder">Founder</option>
-            <option value="engineer">Engineer</option>
-            <option value="designer">Designer</option>
-            <option value="pm">Product manager</option>
-            <option value="other">Other</option>
-          </select>
+          <div class="select-wrap">
+            <select name="role" required>
+              <option value="">Choose your role</option>
+              <option value="founder">Founder</option>
+              <option value="engineer">Engineer</option>
+              <option value="designer">Designer</option>
+              <option value="pm">Product manager</option>
+              <option value="other">Other</option>
+            </select>
+            <svg class="select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
         </label>
         <div class="actions">
           <span></span>
@@ -42,14 +63,16 @@
 
       <section class="step-section" data-step="2" hidden>
         <h1>Your work</h1>
-        <label>Team size <input type="number" name="teamSize" min="1" max="100000" required inputmode="numeric" /></label>
+        <p class="step-desc">Tell us about your team and what you care about.</p>
+        <label>Team size <input type="number" name="teamSize" min="1" max="100000" required inputmode="numeric" placeholder="e.g. 12" /></label>
         <fieldset>
-          <legend>Which features matter most? (pick at least one)</legend>
-          <label class="check"><input type="checkbox" name="features" value="auth" /> Auth & user accounts</label>
-          <label class="check"><input type="checkbox" name="features" value="billing" /> Billing / subscriptions</label>
-          <label class="check"><input type="checkbox" name="features" value="analytics" /> Analytics dashboards</label>
-          <label class="check"><input type="checkbox" name="features" value="api" /> Public API</label>
-          <label class="check"><input type="checkbox" name="features" value="mobile" /> Mobile apps</label>
+          <legend>Which features matter most?</legend>
+          <p class="legend-hint">Pick at least one.</p>
+          <label class="check"><input type="checkbox" name="features" value="auth" /> <span>Auth &amp; user accounts</span></label>
+          <label class="check"><input type="checkbox" name="features" value="billing" /> <span>Billing / subscriptions</span></label>
+          <label class="check"><input type="checkbox" name="features" value="analytics" /> <span>Analytics dashboards</span></label>
+          <label class="check"><input type="checkbox" name="features" value="api" /> <span>Public API</span></label>
+          <label class="check"><input type="checkbox" name="features" value="mobile" /> <span>Mobile apps</span></label>
         </fieldset>
         <div class="actions">
           <button type="button" class="btn ghost" data-back="1">Back</button>
@@ -59,16 +82,17 @@
 
       <section class="step-section" data-step="3" hidden>
         <h1>Quick feedback</h1>
-        <label>How likely are you to recommend us?</label>
-        <div class="rating" id="rating">
-          <button type="button" class="star" data-val="1">★</button>
-          <button type="button" class="star" data-val="2">★</button>
-          <button type="button" class="star" data-val="3">★</button>
-          <button type="button" class="star" data-val="4">★</button>
-          <button type="button" class="star" data-val="5">★</button>
+        <p class="step-desc">Your honest take helps us get better.</p>
+        <label id="rating-label" for="rating-input">How likely are you to recommend us?</label>
+        <div class="rating" id="rating" role="group" aria-labelledby="rating-label">
+          <button type="button" class="star" data-val="1" aria-label="Rate 1 of 5" aria-pressed="false">★</button>
+          <button type="button" class="star" data-val="2" aria-label="Rate 2 of 5" aria-pressed="false">★</button>
+          <button type="button" class="star" data-val="3" aria-label="Rate 3 of 5" aria-pressed="false">★</button>
+          <button type="button" class="star" data-val="4" aria-label="Rate 4 of 5" aria-pressed="false">★</button>
+          <button type="button" class="star" data-val="5" aria-label="Rate 5 of 5" aria-pressed="false">★</button>
         </div>
-        <input type="hidden" name="rating" />
-        <label>Anything else? <textarea name="notes" maxlength="2000" rows="4"></textarea></label>
+        <input type="hidden" name="rating" id="rating-input" />
+        <label>Anything else? <textarea name="notes" maxlength="2000" rows="4" placeholder="Optional. Tell us what stood out."></textarea></label>
         <div class="actions">
           <button type="button" class="btn ghost" data-back="2">Back</button>
           <button type="button" class="btn primary" data-next="4">Review</button>
@@ -76,11 +100,12 @@
       </section>
 
       <section class="step-section" data-step="4" hidden>
-        <h1>Review & submit</h1>
+        <h1>Review &amp; submit</h1>
+        <p class="step-desc">Double-check your answers before sending.</p>
         <dl id="review"></dl>
         <div class="actions">
           <button type="button" class="btn ghost" data-back="3">Back</button>
-          <button type="submit" class="btn primary">Submit</button>
+          <button type="submit" class="btn primary">Submit response</button>
         </div>
         <div class="form-error" id="submit-error" hidden></div>
       </section>

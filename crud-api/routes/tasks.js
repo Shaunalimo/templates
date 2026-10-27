@@ -43,14 +43,20 @@ router.post('/', (req, res) => {
   res.status(201).json(task);
 });
 
-// PUT /api/tasks/:id
-router.put('/:id', (req, res) => {
+// PUT/PATCH /api/tasks/:id
+// PUT is intentionally lenient here: it applies a partial merge rather than
+// requiring a full-resource replacement, so it behaves the same as PATCH.
+// Both verbs share this handler for convenience.
+router.put('/:id', updateHandler);
+router.patch('/:id', updateHandler);
+
+function updateHandler(req, res) {
   const parsed = taskUpdateSchema.safeParse(req.body);
   if (!parsed.success) return badRequest(res, parsed.error);
   const updated = store.update(req.params.id, parsed.data);
   if (!updated) return res.status(404).json({ error: 'not_found' });
   res.json(updated);
-});
+}
 
 // DELETE /api/tasks/:id
 router.delete('/:id', (req, res) => {

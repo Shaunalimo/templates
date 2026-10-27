@@ -12,12 +12,25 @@ function ensure() {
 
 function readAll() {
   ensure();
-  try { return JSON.parse(fs.readFileSync(FILE, 'utf8')); } catch (_) { return []; }
+  const raw = fs.readFileSync(FILE, 'utf8');
+  try {
+    return JSON.parse(raw);
+  } catch (err) {
+    // Never silently clobber: preserve the corrupt file before returning empty.
+    const corruptPath = `${FILE}.corrupt.${Date.now()}`;
+    try { fs.renameSync(FILE, corruptPath); } catch (_) {}
+    console.error(`submissions: failed to parse ${FILE}, preserved as ${corruptPath}`, err);
+    return [];
+  }
 }
 
 function writeAll(rows) {
   ensure();
-  fs.writeFileSync(FILE, JSON.stringify(rows, null, 2), 'utf8');
+  // Atomic write: write to a temp file then rename, so a crash mid-write
+  // (or a concurrent blue/green writer) can't truncate the live file.
+  const tmp = `${FILE}.tmp`;
+  fs.writeFileSync(tmp, JSON.stringify(rows, null, 2), 'utf8');
+  fs.renameSync(tmp, FILE);
 }
 
 function add(data) {
